@@ -1,5 +1,14 @@
+import pygame
+
+pygame.init()
+
+WIDTH = 600
+HEIGHT = 600
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
 def main():
-    print("Fuk u lol")
+    input()
 
 
 if __name__ == '__main__':
