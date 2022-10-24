@@ -1,5 +1,6 @@
 import pygame
 from pygame import Vector2
+from classes.player import Player
 
 
 class Ball:
@@ -25,6 +26,25 @@ class Ball:
     def reflect(self, normal_vector):
         self.direction = self.direction.reflect(normal_vector)
 
+    def collide_plr(self, plr: Player):
+        dist_x = self.pos.x - plr.x
+        dist_y = self.pos.y - plr.y
+        if plr.size_y + self.radius > dist_y > -self.radius:
+            # Check right edge
+            if 0 < dist_x < plr.size_x + self.radius:
+                self.pos.x = plr.x + plr.size_x + self.radius
+                self.reflect(Vector2(1, 0))
+            # Check left edge
+            if 0 > dist_x > -self.radius:
+                self.pos.x = plr.x - self.radius
+                self.reflect(Vector2(-1, 0))
+
+        if plr.size_x + self.radius > dist_x > -self.radius:
+            return
+        #print("SHOULD CHECK")
+
+            # Check left edge
+
     def collide(self, players):
         if self.pos.y - self.radius <= 0:
             self.reflect(Vector2(0, 1))
@@ -38,3 +58,6 @@ class Ball:
         if self.pos.x - self.radius <= 0:
             self.reflect(Vector2(1, 0))
             # print("Hit left")
+
+        for plr in players:
+            self.collide_plr(plr)
