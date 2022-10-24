@@ -7,6 +7,8 @@ class Player:
     life: int
     speed: int
     border_y: int
+    size_x = 10
+    size_y = 60
 
     def __init__(self, x, y, life, speed):
         self.x = x
@@ -16,11 +18,12 @@ class Player:
         self.border_y = 600
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (255, 255, 255), (self.x, self.y, 10, 60))
+        pygame.draw.rect(screen, (255, 255, 255),
+                         (self.x, self.y, self.size_x, self.size_y))
 
     def move(self, direction):
         self.y += direction * self.speed
-        if self.y + 60 > self.border_y:
-            self.y = self.border_y - 60
+        if self.y + self.size_y > self.border_y:
+            self.y = self.border_y - self.size_y
         if self.y < 0:
             self.y = 0
