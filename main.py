@@ -7,16 +7,23 @@ pygame.init()
 WIDTH = 600
 HEIGHT = 600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+FPS = 60
+CLOCK = pygame.time.Clock()
 
 
 def main():
-    player1 = Player(50, 270, 10, 0.3)  # spawn player 1
-    player2 = Player(550, 270, 10, 0.3)  # spawn player 2
+    player1 = Player(50, 270, 10, 3)  # spawn player 1
+    player2 = Player(550, 270, 10, 3)  # spawn player 2
+    ball = Ball(300, 300, 5)
     while True:
+        CLOCK.tick(FPS)
         SCREEN.fill((0, 0, 0))
         player1.draw(SCREEN)
         player2.draw(SCREEN)
+        ball.draw(SCREEN)
         pygame.display.update()
+        ball.move()
+        ball.collide((player1, player2))
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
             player1.move(-1)
