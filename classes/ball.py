@@ -9,9 +9,8 @@ class Ball:
     radius: int = 10
 
     def __init__(self, x: float, y: float, speed: float) -> None:
-        self.x = x
-        self.y = y
-        self.direction = Vector2().normalize()
+        self.pos = Vector2(x, y)
+        self.direction = Vector2(1, 1).normalize()
         self.velocity = speed
 
     def update_pos(self):
