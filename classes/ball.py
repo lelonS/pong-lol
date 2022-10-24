@@ -27,23 +27,36 @@ class Ball:
         self.direction = self.direction.reflect(normal_vector)
 
     def collide_plr(self, plr: Player):
-        dist_x = self.pos.x - plr.x
-        dist_y = self.pos.y - plr.y
-        if plr.size_y + self.radius > dist_y > -self.radius:
-            # Check right edge
-            if 0 < dist_x < plr.size_x + self.radius:
-                self.pos.x = plr.x + plr.size_x + self.radius
-                self.reflect(Vector2(1, 0))
-            # Check left edge
-            if 0 > dist_x > -self.radius:
-                self.pos.x = plr.x - self.radius
-                self.reflect(Vector2(-1, 0))
-
-        if plr.size_x + self.radius > dist_x > -self.radius:
+        dist_x = abs(self.pos.x - (plr.x + plr.size_x / 2))
+        dist_y = abs(self.pos.y - (plr.y + plr.size_y / 2))
+        # Check if inside box
+        if dist_x > plr.size_x/2 + self.radius:
             return
-        #print("SHOULD CHECK")
+        if dist_y > plr.size_y/2 + self.radius:
+            return
+        # Check closest edge
+        box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
+        # deg = Vector2.angle_to(self.pos - box_mid)
 
-            # Check left edge
+        dist_up = abs(self.pos.y - plr.y)
+        dist_down = abs(self.pos.y - plr.y - plr.size_y)
+        dist_right = abs(self.pos.x - (plr.x+plr.size_x))
+        dist_left = abs(self.pos.x - plr.x)
+
+        current_lowest = dist_up
+        current_surface = Vector2(0, -1)
+
+        if dist_down < current_lowest:
+            current_lowest = dist_down
+            current_surface = Vector2(0, 1)
+        if dist_right < current_lowest:
+            current_lowest = dist_right
+            current_surface = Vector2(1, 0)
+        if dist_left < current_lowest:
+            current_lowest = dist_left
+            current_surface = Vector2(-1, 0)
+
+        self.reflect(current_surface)
 
     def collide(self, players):
         if self.pos.y - self.radius <= 0:
