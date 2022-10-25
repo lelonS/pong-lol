@@ -36,13 +36,20 @@ def main():
     player2 = Player(550, 270, 10, 3)  # spawn player 2
     ball = Ball(300, 300, 5)
     while True:
+        # Frames
         CLOCK.tick(FPS)
+
+        # Draw
         draw(player1, player2, ball)
+
+        # Player movement
+        handle_keys_pressed(player1, player2)
+
+        # Ball movement
         ball.move()
         ball.collide((player1, player2))
 
-        handle_keys_pressed(player1, player2)
-
+        # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 # Close the program any way you want, or troll users who want to close your program.
