@@ -85,15 +85,19 @@ class Ball:
 
     def collide(self, players):
         if self.pos.y - self.radius <= 0:
+            self.pos.y = self.radius
             self.reflect(Vector2(0, 1))
             # print("Hit top")
         if self.pos.x + self.radius >= self.border_x:
+            self.pos.x = self.border_x - self.radius
             self.reflect(Vector2(-1, 0))
             # print("Hit right")
         if self.pos.y + self.radius >= self.border_y:
+            self.pos.y = self.border_y - self.radius
             self.reflect(Vector2(0, -1))
             # print("Hit bottom")
         if self.pos.x - self.radius <= 0:
+            self.pos.x = self.radius
             self.reflect(Vector2(1, 0))
             # print("Hit left")
 
