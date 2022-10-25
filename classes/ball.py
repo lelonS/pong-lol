@@ -63,22 +63,37 @@ class Ball:
             new_x = plr.x - self.radius
             new_y = self.pos.y
 
-        # CORNER TESTS
+        # CORNER TESTS NEEDS FIX
         # sin(corner_deg) = plr.size_y / plr.size_x
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
-        deg = Vector2(1, 0).angle_to(self.pos - box_mid)
+        deg = Vector2(1, 0).angle_to(self.pos - box_mid)  # NORMALIZE?
         interval_deg = 5
         corner_deg = degrees(asin(radians(plr.size_y / plr.size_x)))
-        corners = [n * corner_deg for n in range(1, 5)]
+        # [n * corner_deg for n in range(1, 5)]  # BROKEN
+        corners = [corner_deg, 180 - corner_deg,
+                   180 + corner_deg, 360 - corner_deg]
 
         hit_corner = False
+        deg_normal = deg
+
+        max_iter = 100
+        current_it = 0
+        while deg_normal < 0 and current_it < max_iter:
+            deg_normal += 360
+            current_it += 1
+        while deg_normal > 360 and current_it < max_iter:
+            deg_normal -= 360
+            current_it += 1
+
+        print(corners, deg, deg_normal, current_it)
         for corner in corners:
-            if corner - interval_deg <= deg <= corner + interval_deg:
+            if corner - interval_deg <= deg_normal <= corner + interval_deg:
                 hit_corner = True
                 break
         if hit_corner:
             self.direction = (self.pos - box_mid).normalize()
             # TODO POS STUFF
+            print("HIT CORNER")
         else:
             self.pos = Vector2(new_x, new_y)  # WIP?
             self.reflect(current_surface)
