@@ -72,15 +72,15 @@ class Ball:
         corners = [n * corner_deg for n in range(1, 5)]
 
         hit_corner = False
-
         for corner in corners:
             if corner - interval_deg <= deg <= corner + interval_deg:
                 hit_corner = True
                 break
         if hit_corner:
             self.direction = (self.pos - box_mid).normalize()
+            # TODO POS STUFF
         else:
-            self.pos = Vector2(new_x, new_y)
+            self.pos = Vector2(new_x, new_y)  # ?
             self.reflect(current_surface)
 
     def collide(self, players):
