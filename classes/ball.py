@@ -39,23 +39,32 @@ class Ball:
         # deg = Vector2.angle_to(self.pos - box_mid)
 
         dist_up = abs(self.pos.y - plr.y)
-        dist_down = abs(self.pos.y - plr.y - plr.size_y)
-        dist_right = abs(self.pos.x - (plr.x+plr.size_x))
+        dist_down = abs(self.pos.y - (plr.y + plr.size_y))
+        dist_right = abs(self.pos.x - (plr.x + plr.size_x))
         dist_left = abs(self.pos.x - plr.x)
 
         current_lowest = dist_up
         current_surface = Vector2(0, -1)
+        new_x = self.pos.x
+        new_y = plr.y - self.radius
 
         if dist_down < current_lowest:
             current_lowest = dist_down
             current_surface = Vector2(0, 1)
+            new_x = self.pos.x
+            new_y = plr.y + plr.size_y + self.radius
         if dist_right < current_lowest:
             current_lowest = dist_right
             current_surface = Vector2(1, 0)
+            new_x = plr.x + plr.size_x + self.radius
+            new_y = self.pos.y
         if dist_left < current_lowest:
             current_lowest = dist_left
             current_surface = Vector2(-1, 0)
+            new_x = plr.x - self.radius
+            new_y = self.pos.y
 
+        self.pos = Vector2(new_x, new_y)
         self.reflect(current_surface)
 
     def collide(self, players):
