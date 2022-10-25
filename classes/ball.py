@@ -80,26 +80,32 @@ class Ball:
             self.direction = (self.pos - box_mid).normalize()
             # TODO POS STUFF
         else:
-            self.pos = Vector2(new_x, new_y)  # ?
+            self.pos = Vector2(new_x, new_y)  # WIP?
             self.reflect(current_surface)
 
     def collide(self, players):
+        # Walls
+        # Top
         if self.pos.y - self.radius <= 0:
             self.pos.y = self.radius
             self.reflect(Vector2(0, 1))
             # print("Hit top")
+        # Right
         if self.pos.x + self.radius >= self.border_x:
             self.pos.x = self.border_x - self.radius
             self.reflect(Vector2(-1, 0))
             # print("Hit right")
+        # Bottom
         if self.pos.y + self.radius >= self.border_y:
             self.pos.y = self.border_y - self.radius
             self.reflect(Vector2(0, -1))
             # print("Hit bottom")
+        # Left
         if self.pos.x - self.radius <= 0:
             self.pos.x = self.radius
             self.reflect(Vector2(1, 0))
             # print("Hit left")
 
+        # Players
         for plr in players:
             self.collide_plr(plr)
