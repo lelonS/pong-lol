@@ -52,7 +52,7 @@ def main():
         # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # Close the program any way you want, or troll users who want to close your program.
+                # Close the program any way you want
                 raise SystemExit
 
 

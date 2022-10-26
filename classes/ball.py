@@ -1,4 +1,4 @@
-from math import asin, degrees
+from math import atan, degrees
 import pygame
 from pygame import Vector2
 from classes.player import Player
@@ -63,13 +63,12 @@ class Ball:
             new_x = plr.x - self.radius
             new_y = self.pos.y
 
-        # CORNER TESTS NEEDS FIX
+        # CORNER TESTS
         # sin(corner_deg) = plr.size_y / plr.size_x
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
-        deg = Vector2(1, 0).angle_to(self.pos - box_mid)  # NORMALIZE?
+        deg = Vector2(1, 0).angle_to(self.pos - box_mid)
         interval_deg = 5
-        corner_deg = degrees(asin(plr.size_y / plr.size_x))
-        # [n * corner_deg for n in range(1, 5)]  # BROKEN
+        corner_deg = degrees(atan(plr.size_y / plr.size_x))
         corners = [corner_deg, 180 - corner_deg,
                    180 + corner_deg, 360 - corner_deg]
 
