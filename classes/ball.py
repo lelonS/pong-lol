@@ -1,4 +1,4 @@
-from math import asin, radians, degrees
+from math import asin, degrees
 import pygame
 from pygame import Vector2
 from classes.player import Player
@@ -68,7 +68,7 @@ class Ball:
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
         deg = Vector2(1, 0).angle_to(self.pos - box_mid)  # NORMALIZE?
         interval_deg = 5
-        corner_deg = degrees(asin(radians(plr.size_y / plr.size_x)))
+        corner_deg = degrees(asin(plr.size_y / plr.size_x))
         # [n * corner_deg for n in range(1, 5)]  # BROKEN
         corners = [corner_deg, 180 - corner_deg,
                    180 + corner_deg, 360 - corner_deg]
