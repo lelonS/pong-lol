@@ -16,7 +16,6 @@ def draw(player1, player2, ball):
     player1.draw(SCREEN)
     player2.draw(SCREEN)
     ball.draw(SCREEN)
-    pygame.display.update()
 
 
 def handle_keys_pressed(player1, player2):
@@ -34,7 +33,7 @@ def handle_keys_pressed(player1, player2):
 def main():
     player1 = Player(50, 270, 10, 3)  # spawn player 1
     player2 = Player(550, 270, 10, 3)  # spawn player 2
-    ball = Ball(300, 300, 5)
+    ball = Ball(300, 300, 1, screen=SCREEN)
     while True:
         # Frames
         CLOCK.tick(FPS)
@@ -48,7 +47,7 @@ def main():
         # Ball movement
         ball.move()
         ball.collide((player1, player2))
-
+        pygame.display.update()
         # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

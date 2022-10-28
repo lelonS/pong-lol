@@ -1,4 +1,5 @@
 from math import atan, degrees
+import py
 import pygame
 from pygame import Vector2
 from classes.player import Player
@@ -12,10 +13,13 @@ class Ball:
     border_x: int = 600
     border_y: int = 600
 
-    def __init__(self, x: float, y: float, speed: float) -> None:
+    screen = None
+
+    def __init__(self, x: float, y: float, speed: float, screen=None) -> None:
         self.pos = Vector2(x, y)
         self.direction = Vector2(1, 0).normalize()
         self.velocity = speed
+        self.screen = screen
 
     def move(self):
         self.pos += self.velocity * self.direction
@@ -28,65 +32,43 @@ class Ball:
         self.direction = self.direction.reflect(normal_vector)
 
     def collide_plr(self, plr: Player):
-        dist_x = abs(self.pos.x - (plr.x + plr.size_x / 2))
-        dist_y = abs(self.pos.y - (plr.y + plr.size_y / 2))
-        # Check if inside box
-        if dist_x > plr.size_x/2 + self.radius:
-            return
-        if dist_y > plr.size_y/2 + self.radius:
-            return
-        # Check closest edge
-
-        dist_up = abs(self.pos.y - plr.y)
-        dist_down = abs(self.pos.y - (plr.y + plr.size_y))
-        dist_right = abs(self.pos.x - (plr.x + plr.size_x))
-        dist_left = abs(self.pos.x - plr.x)
-
-        current_lowest = dist_up
-        current_surface = Vector2(0, -1)
-        new_x = self.pos.x
-        new_y = plr.y - self.radius
-
-        if dist_down < current_lowest:
-            current_lowest = dist_down
-            current_surface = Vector2(0, 1)
-            new_x = self.pos.x
-            new_y = plr.y + plr.size_y + self.radius
-        if dist_right < current_lowest:
-            current_lowest = dist_right
-            current_surface = Vector2(1, 0)
-            new_x = plr.x + plr.size_x + self.radius
-            new_y = self.pos.y
-        if dist_left < current_lowest:
-            current_lowest = dist_left
-            current_surface = Vector2(-1, 0)
-            new_x = plr.x - self.radius
-            new_y = self.pos.y
-
-        # CORNER TESTS
-        # sin(corner_deg) = plr.size_y / plr.size_x
+        closest_point = Vector2(0, 0)
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
-        deg = Vector2(1, 0).angle_to(self.pos - box_mid)
-        interval_deg = 10
-        corner_deg = degrees(atan(plr.size_y / plr.size_x))
-        corners = [corner_deg, 180 - corner_deg,
-                   180 + corner_deg, 360 - corner_deg]
+        is_left = False
+        is_right = False
 
-        hit_corner = False
-        deg_normal = deg % 360
+        if self.pos.x < plr.x:
+            is_left = True
+        elif self.pos.x > plr.x + plr.size_x:
+            is_right = True
 
-        #print(corners, deg, deg_normal)
-        for corner in corners:
-            if (corner - interval_deg) % 360 <= deg_normal <= (corner + interval_deg) % 360:
-                hit_corner = True
-                break
-        if hit_corner:
-            self.direction = (self.pos - box_mid).normalize()
-            # TODO POS STUFF
-            print("HIT CORNER", deg, deg_normal)
+        if self.pos.y <= plr.y:
+            # Pos above player
+            if is_right:  # Top right corner closest
+                closest_point = Vector2(plr.x + plr.size_x, plr.y)
+            elif is_left:
+                closest_point = Vector2(plr.x, plr.y)
+            else:
+                closest_point = Vector2(self.pos.x, plr.y)
+        elif self.pos.y >= plr.y + plr.size_y:
+            # Pos below player
+            if is_right:
+                closest_point = Vector2(plr.x + plr.size_x, plr.y + plr.size_y)
+            elif is_left:
+                closest_point = Vector2(plr.x, plr.y + plr.size_y)
+            else:
+                closest_point = Vector2(self.pos.x, plr.y + plr.size_y)
         else:
-            self.pos = Vector2(new_x, new_y)  # WIP?
-            self.reflect(current_surface)
+            # Pos same level as player
+            if is_right:
+                closest_point = Vector2(plr.x + plr.size_x, self.pos.y)
+            elif is_left:
+                closest_point = Vector2(plr.x, self.pos.y)
+            else:
+                # Vector2(self.pos.x, plr.y + plr.size_y) # POS INSIDE PLR?
+                closest_point = self.pos
+        pygame.draw.line(self.screen, (255, 0, 0), (self.pos.x,
+                         self.pos.y), (closest_point.x, closest_point.y))
 
     def collide(self, players):
         # Walls
