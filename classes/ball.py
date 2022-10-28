@@ -75,7 +75,7 @@ class Ball:
         hit_corner = False
         deg_normal = deg % 360
 
-        print(corners, deg, deg_normal)
+        #print(corners, deg, deg_normal)
         for corner in corners:
             if (corner - interval_deg) % 360 <= deg_normal <= (corner + interval_deg) % 360:
                 hit_corner = True
@@ -83,7 +83,7 @@ class Ball:
         if hit_corner:
             self.direction = (self.pos - box_mid).normalize()
             # TODO POS STUFF
-            print("HIT CORNER")
+            print("HIT CORNER", deg, deg_normal)
         else:
             self.pos = Vector2(new_x, new_y)  # WIP?
             self.reflect(current_surface)
