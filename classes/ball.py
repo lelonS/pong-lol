@@ -1,5 +1,3 @@
-from math import atan, degrees
-import py
 import pygame
 from pygame import Vector2
 from classes.player import Player
