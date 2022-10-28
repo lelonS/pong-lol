@@ -31,6 +31,9 @@ class Ball:
     def reflect(self, normal_vector):
         self.direction = self.direction.reflect(normal_vector)
 
+    def get_closest_from_inside(plr):
+        pass
+
     def collide_plr(self, plr: Player):
         closest_point = Vector2(0, 0)
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
