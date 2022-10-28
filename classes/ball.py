@@ -54,10 +54,10 @@ class Ball:
             # Pos above player
             if is_right:  # Top right corner closest
                 plr.closest_point = Vector2(plr.x + plr.size_x, plr.y)
-                plr.normal_vector = Vector2(1, -1)
+                plr.normal_vector = (self.pos-plr.closest_point).normalize()
             elif is_left:  # Top left corner
                 plr.closest_point = Vector2(plr.x, plr.y)
-                plr.normal_vector = Vector2(-1, -1)
+                plr.normal_vector = (self.pos-plr.closest_point).normalize()
             else:  # top
                 plr.closest_point = Vector2(self.pos.x, plr.y)
                 plr.normal_vector = Vector2(0, -1)
@@ -66,10 +66,10 @@ class Ball:
             if is_right:    # Bottom right
                 plr.closest_point = Vector2(
                     plr.x + plr.size_x, plr.y + plr.size_y)
-                plr.normal_vector = Vector2(1, 1)
+                plr.normal_vector = (self.pos-plr.closest_point).normalize()
             elif is_left:  # Bottom left
                 plr.closest_point = Vector2(plr.x, plr.y + plr.size_y)
-                plr.normal_vector = Vector2(-1, 1)
+                plr.normal_vector = (self.pos-plr.closest_point).normalize()
             else:  # bottom
                 plr.closest_point = Vector2(self.pos.x, plr.y + plr.size_y)
                 plr.normal_vector = Vector2(0, 1)
@@ -91,8 +91,7 @@ class Ball:
             # COLLISION
             # self.velocity += 0.1
             self.pos = plr.closest_point + self.radius * plr.normal_vector
-            self.reflect(plr.normal_vector +
-                         Vector2(random.randint(-1, 1)/100, random.randint(-1, 1)/100))
+            self.reflect(plr.normal_vector)
 
         pygame.draw.line(self.screen, (255, 0, 0), (self.pos.x,
                          self.pos.y), (plr.closest_point.x, plr.closest_point.y))
