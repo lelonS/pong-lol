@@ -67,7 +67,7 @@ class Ball:
         # sin(corner_deg) = plr.size_y / plr.size_x
         box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
         deg = Vector2(1, 0).angle_to(self.pos - box_mid)
-        interval_deg = 7
+        interval_deg = 10
         corner_deg = degrees(atan(plr.size_y / plr.size_x))
         corners = [corner_deg, 180 - corner_deg,
                    180 + corner_deg, 360 - corner_deg]
