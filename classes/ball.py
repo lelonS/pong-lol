@@ -15,6 +15,8 @@ class Ball:
     # closest_point: Vector2 = Vector2(0, 0)
     # normal_vector: Vector2 = Vector2(1, -1)
 
+    plrs_info = []
+
     screen = None
 
     def __init__(self, x: float, y: float, speed: float, screen=None) -> None:
@@ -36,7 +38,7 @@ class Ball:
     def get_closest_from_inside(plr):
         pass
 
-    def collide_plr(self, plr: Player):
+    def collide_plr(self, plr: Player, plr_info: int):
         # self.closest_point = Vector2(0, 0)
         # box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
         is_left = False
@@ -53,48 +55,56 @@ class Ball:
         if self.pos.y <= plr.y:
             # Pos above player
             if is_right:  # Top right corner closest
-                plr.closest_point = Vector2(plr.x + plr.size_x, plr.y)
-                plr.normal_vector = (self.pos-plr.closest_point).normalize()
+                plr_info["closest_point"] = Vector2(plr.x + plr.size_x, plr.y)
+                plr_info["normal_vector"] = (
+                    self.pos-plr_info["closest_point"]).normalize()
             elif is_left:  # Top left corner
-                plr.closest_point = Vector2(plr.x, plr.y)
-                plr.normal_vector = (self.pos-plr.closest_point).normalize()
+                plr_info["closest_point"] = Vector2(plr.x, plr.y)
+                plr_info["normal_vector"] = (
+                    self.pos-plr_info["closest_point"]).normalize()
             else:  # top
-                plr.closest_point = Vector2(self.pos.x, plr.y)
-                plr.normal_vector = Vector2(0, -1)
+                plr_info["closest_point"] = Vector2(self.pos.x, plr.y)
+                plr_info["normal_vector"] = Vector2(0, -1)
         elif self.pos.y >= plr.y + plr.size_y:
             # Pos below player
             if is_right:    # Bottom right
-                plr.closest_point = Vector2(
+                plr_info["closest_point"] = Vector2(
                     plr.x + plr.size_x, plr.y + plr.size_y)
-                plr.normal_vector = (self.pos-plr.closest_point).normalize()
+                plr_info["normal_vector"] = (
+                    self.pos-plr_info["closest_point"]).normalize()
             elif is_left:  # Bottom left
-                plr.closest_point = Vector2(plr.x, plr.y + plr.size_y)
-                plr.normal_vector = (self.pos-plr.closest_point).normalize()
+                plr_info["closest_point"] = Vector2(plr.x, plr.y + plr.size_y)
+                plr_info["normal_vector"] = (
+                    self.pos-plr_info["closest_point"]).normalize()
             else:  # bottom
-                plr.closest_point = Vector2(self.pos.x, plr.y + plr.size_y)
-                plr.normal_vector = Vector2(0, 1)
+                plr_info["closest_point"] = Vector2(
+                    self.pos.x, plr.y + plr.size_y)
+                plr_info["normal_vector"] = Vector2(0, 1)
         else:
             # Pos same level as player
             if is_right:  # right
-                plr.closest_point = Vector2(plr.x + plr.size_x, self.pos.y)
-                plr.normal_vector = Vector2(1, 0)
+                plr_info["closest_point"] = Vector2(
+                    plr.x + plr.size_x, self.pos.y)
+                plr_info["normal_vector"] = Vector2(1, 0)
             elif is_left:  # left
-                plr.closest_point = Vector2(plr.x, self.pos.y)
-                plr.normal_vector = Vector2(-1, 0)
+                plr_info["closest_point"] = Vector2(plr.x, self.pos.y)
+                plr_info["normal_vector"] = Vector2(-1, 0)
             else:  # inside
                 # Vector2(self.pos.x, plr.y + plr.size_y) # POS INSIDE PLR?
                 # self.velocity += plr.speed
                 is_inside = True
-                print("CODE RED", plr.closest_point, plr.normal_vector)
+                print("CODE RED",
+                      plr_info["closest_point"], plr_info["normal_vector"])
 
-        if (self.pos.distance_squared_to(plr.closest_point) <= self.radius ** 2) or is_inside:
+        if (self.pos.distance_squared_to(plr_info["closest_point"]) <= self.radius ** 2) or is_inside:
             # COLLISION
             # self.velocity += 0.1
-            self.pos = plr.closest_point + self.radius * plr.normal_vector
-            self.reflect(plr.normal_vector)
+            self.pos = plr_info["closest_point"] + \
+                self.radius * plr_info["normal_vector"]
+            self.reflect(plr_info["normal_vector"])
 
         pygame.draw.line(self.screen, (255, 0, 0), (self.pos.x,
-                         self.pos.y), (plr.closest_point.x, plr.closest_point.y))
+                         self.pos.y), (plr_info["closest_point"].x, plr_info["closest_point"].y))
 
     def collide(self, players):
         # Walls
@@ -120,5 +130,8 @@ class Ball:
             # print("Hit left")
 
         # Players
-        for plr in players:
-            self.collide_plr(plr)
+        if len(self.plrs_info) < len(players):
+            self.plrs_info += [{"closest_point": Vector2(0, 0),
+                               "normal_vector": Vector2(0, 0)}] * (len(players) - len(self.plrs_info))
+        for i, plr in enumerate(players):
+            self.collide_plr(plr, self.plrs_info[i])
