@@ -1,4 +1,3 @@
-import random
 import pygame
 from pygame import Vector2
 from classes.player import Player
@@ -39,19 +38,16 @@ class Ball:
         pass
 
     def collide_plr(self, plr: Player, plr_info: int):
-        # self.closest_point = Vector2(0, 0)
         # box_mid = Vector2(plr.x + plr.size_x / 2, plr.y + plr.size_y / 2)
         is_left = False
         is_right = False
         is_inside = False
-        # normal_vector = Vector2(0, 0)
 
         if self.pos.x < plr.x:
             is_left = True
         elif self.pos.x > plr.x + plr.size_x:
             is_right = True
 
-        # print(self.pos, plr.x, plr.y)
         if self.pos.y <= plr.y:
             # Pos above player
             if is_right:  # Top right corner closest
@@ -90,21 +86,21 @@ class Ball:
                 plr_info["closest_point"] = Vector2(plr.x, self.pos.y)
                 plr_info["normal_vector"] = Vector2(-1, 0)
             else:  # inside
-                # Vector2(self.pos.x, plr.y + plr.size_y) # POS INSIDE PLR?
-                # self.velocity += plr.speed
                 is_inside = True
                 print("CODE RED",
                       plr_info["closest_point"], plr_info["normal_vector"])
 
-        if (self.pos.distance_squared_to(plr_info["closest_point"]) <= self.radius ** 2) or is_inside:
+        dist_sq = self.pos.distance_squared_to(plr_info["closest_point"])
+
+        if (dist_sq <= self.radius ** 2) or is_inside:
             # COLLISION
-            # self.velocity += 0.1
             self.pos = plr_info["closest_point"] + \
                 self.radius * plr_info["normal_vector"]
             self.reflect(plr_info["normal_vector"])
 
-        pygame.draw.line(self.screen, (255, 0, 0), (self.pos.x,
-                         self.pos.y), (plr_info["closest_point"].x, plr_info["closest_point"].y))
+        pygame.draw.line(self.screen, (255, 0, 0), (self.pos.x, self.pos.y),
+                         (plr_info["closest_point"].x,
+                          plr_info["closest_point"].y))
 
     def collide(self, players):
         # Walls
@@ -132,6 +128,8 @@ class Ball:
         # Players
         if len(self.plrs_info) < len(players):
             self.plrs_info += [{"closest_point": Vector2(0, 0),
-                               "normal_vector": Vector2(0, 0)}] * (len(players) - len(self.plrs_info))
+                               "normal_vector": Vector2(0, 0)}] * \
+                (len(players) - len(self.plrs_info))
+
         for i, plr in enumerate(players):
             self.collide_plr(plr, self.plrs_info[i])
